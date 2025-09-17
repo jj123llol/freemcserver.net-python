@@ -12,7 +12,7 @@ hit start, and filter for a request called "start"
 
 goto headers and get authentication (make sure u copy SCOPED too)
 
-get the metrics (probably the last header)
+get the metrics (probably the last header), this changes quite a bit so keep it updated!
 
 get the id from the topbar url,  panel.freemcserver.net/server/(this will be the id!)
 

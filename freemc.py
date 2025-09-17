@@ -45,6 +45,11 @@ class FreeMc():
                 return e
 
     class server():
+        def getPlayers(self):
+            response = requests.get(f"https://api.freemcserver.net/v4/server/{idz}/ping", headers=auth).json()
+            online = response['data']["players"]['list']
+            return [FreeMc.user(plr['name']) for plr in online]
+
         def status(self):
             try:
                 response = requests.get(f"https://api.freemcserver.net/v4/server/{idz}/usage",headers=auth).json()

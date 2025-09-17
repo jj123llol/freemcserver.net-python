@@ -30,15 +30,30 @@ server, console, chat = FreeMc.server(), FreeMc.console(), FreeMc.chat()
 # server
 
 you can do
-server.start() to start the server,
+```py
+server.start()
+```
+to start the server,
 
-server.stop() to stop the server,
+```py
+server.stop()
+```
+to stop the server,
 
-server.usage() to return the usage JSON of the server,
+```py
+server.usage()
+```
+to return the usage JSON of the server,
 
-server.status() returns true or false. true for online, false for offline.
+```py
+server.status()
+```
+returns true or false. true for online, false for offline.
 
-server.restart() to restart the server.
+```py
+server.restart()
+```
+to restart the server.
 
 
 # console

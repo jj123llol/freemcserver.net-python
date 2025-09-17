@@ -87,7 +87,7 @@ class FreeMc():
             return response
 
         def smite(self):
-            response = FreeMc.console().write(f"execute at {self.user} run summon lightning ~ ~ ~")
+            response = FreeMc.console().write(f"execute at {self.user} run summon lightning_bolt ~ ~ ~")
             self.kill()
             return response
 
@@ -105,4 +105,9 @@ class FreeMc():
 
         def deop(self):
             response = FreeMc.console().write(f"deop {self.user}")
+            return response  
+
+    class game():
+        def time(self, set):
+            response = FreeMc.console().write(f"time set {set}")
             return response  

@@ -107,6 +107,6 @@ summons lightning on the target and kills them.
 
 # game
 ```
-game.time("number/day/night")
+game.time("arg")
 ```
 this executes the minecraft command "time set (arg)" with arg being the given argument 

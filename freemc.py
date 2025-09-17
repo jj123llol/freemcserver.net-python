@@ -1,10 +1,13 @@
-from typing import Optional
-import requests
-import re
+import requests, re
 
 class FreeMc():
 
-    global auth, idz
+    global auth, idz, known_metrics
+
+    known_metrics = { # im like 70% sure they just swap between a few, so maybe we can collect them all and make a list so people dont have to manually change it
+        "ea481edd605e676d", 
+        "db04d5e26046e3e2",
+    }
 
     def __init__(self, authz, idx, metrics):
         global auth, idz
@@ -13,19 +16,7 @@ class FreeMc():
             "x-fmcs-metrics-wfkpe9eata": metrics
         }
         idz = idx
-        print("with love from Ant, and dev<3")
     class console():
-        # UNTESTED | UNCOMMENT IF NEEDED
-        # def getPlayers(self) -> Optional[str]:
-        #     rgx = r"\[\d+:\d+:\d+ INFO\]: There are \d+ of a max of \d+ players online"
-        #     self.write('list')
-        #     logs = self.getlogs()
-
-        #     if isinstance(logs, Exception):
-        #         raise logs
-
-        #     return re.match(rgx, '\n'.join(logs))
-
         def write(self, text):
             try:
                 payload = {
@@ -33,6 +24,23 @@ class FreeMc():
                 }
                 response = requests.post(f"https://api.freemcserver.net/v4/server/{idz}/command", json=payload, headers=auth).json()
                 return response
+            except Exception as e:
+                return e
+
+        def getlogs(self):
+            try:
+                response = requests.get(f"https://api.freemcserver.net/v4/server/{idz}/logs", headers=auth).json()
+                return response['log']['lines']
+            except Exception as e:
+                return e
+
+        def getlatest(self):
+            try:
+                response = requests.get(f"https://api.freemcserver.net/v4/server/{idz}/logs", headers=auth).json()
+                latest = response['log']['latest']
+                response = requests.get(f"https://api.freemcserver.net/v4/server/{idz}/logs?lines=200&since={latest-2}", headers=auth).json()
+                string = str(response['log']['lines'])
+                return string[string.find("[K[")+2:string.find("'}")]
             except Exception as e:
                 return e
 
@@ -101,7 +109,7 @@ class FreeMc():
             return response
 
         def smite(self):
-            response = FreeMc.console().write(f"execute at {self.user} run summon minecraft:lightning_bolt ~ ~ ~")
+            response = FreeMc.console().write(f"execute at {self.user} run summon lightning_bolt ~ ~ ~")
             self.kill()
             return response
 

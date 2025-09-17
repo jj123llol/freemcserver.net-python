@@ -21,7 +21,7 @@ import freemc
 
 FreeMc = freemc.FreeMc("auth", "server id", "metrics")
 
-server, console, chat = FreeMc.server(), FreeMc.console(), FreeMc.chat()
+server, console, chatm game = FreeMc.server(), FreeMc.console(), FreeMc.chat(), FreeMc.game()
 ```
 
 
@@ -102,3 +102,11 @@ user.deop()
 user.smite()
 ```
 summons lightning on the target and kills them.
+
+
+
+# game
+```
+game.time("number/day/night")
+```
+this executes the minecraft command "time set (arg)" with arg being the given argument 

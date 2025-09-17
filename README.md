@@ -97,4 +97,8 @@ user.unwhitelist()
 user.op()
 user.deop()
 ```
-user.smite() summons lightning on the target and kills them.
+
+```py
+user.smite()
+```
+summons lightning on the target and kills them.

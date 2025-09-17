@@ -64,6 +64,15 @@ server.restart()
 ```
 to restart the server.
 
+```py
+server.getPlayers()
+```
+returns a list of active users, in the FreeMc.user() format.
+```py
+users = server.getPlayers()
+for user in user:
+  user.smite()
+```
 
 # console
 
@@ -73,6 +82,15 @@ example:
 console.write("kill Plasma_Admin")
 ```
 
+```py
+console.getlogs()
+```
+returns a JSON of the console
+
+```py
+console.getlatest()
+```
+returns a string of the latest console msg
 # chat
 
 chat.say("message") makes the server say the given message.

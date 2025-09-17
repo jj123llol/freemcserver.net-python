@@ -11,6 +11,7 @@ class FreeMc():
             "x-fmcs-metrics-wfkpe9eata": metrics
         }
         idz = idx
+        print("with love from Ant, and dev<3")
     class console():
         def write(self, text):
             try:

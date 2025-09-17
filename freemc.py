@@ -1,4 +1,5 @@
 import requests
+import re
 
 class FreeMc():
 
@@ -88,7 +89,7 @@ class FreeMc():
             return response
 
         def smite(self):
-            response = FreeMc.console().write(f"execute at {self.user} run summon lightning_bolt ~ ~ ~")
+            response = FreeMc.console().write(f"execute at {self.user} run summon minecraft:lightning_bolt ~ ~ ~")
             self.kill()
             return response
 

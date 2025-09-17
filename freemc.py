@@ -7,6 +7,7 @@ class FreeMc():
     known_metrics = { # im like 70% sure they just swap between a few, so maybe we can collect them all and make a list so people dont have to manually change it
         "ea481edd605e676d", 
         "db04d5e26046e3e2",
+        "1bba7aaf42261ccc",
     }
 
     def __init__(self, authz, idx, metrics):
@@ -56,12 +57,14 @@ class FreeMc():
                 return response['usage']['is_online']
             except Exception as e:
                 return e
+
         def start(self):
             try:
                 response = requests.get(f"https://api.freemcserver.net/v4/server/{idz}/start",headers=auth).json()
                 return response
             except Exception as e:
                 return e
+
         def stop(self):
             try:
                 response = requests.get(f"https://api.freemcserver.net/v4/server/{idz}/stop",headers=auth).json()
@@ -132,6 +135,11 @@ class FreeMc():
 
         def deop(self):
             response = FreeMc.console().write(f"deop {self.user}")
+            return response  
+
+
+        def give(self, item, amount):
+            response = FreeMc.console().write(f"give {self.user} {item} {amount}")
             return response  
 
     class game():

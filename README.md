@@ -130,6 +130,11 @@ user.smite()
 ```
 summons lightning on the target and kills them.
 
+```py
+user.give(item, amount)
+```
+gives the user the specificed amount of the specified item
+
 
 
 # game

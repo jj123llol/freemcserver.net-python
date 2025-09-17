@@ -88,6 +88,8 @@ class FreeMc():
 
     class chat():
         def say(self, msg):
+            if len(msg) > 256:
+                raise ValueError("Message is too long!")
             response = FreeMc.console().write(f"say {msg}")
             return response
 

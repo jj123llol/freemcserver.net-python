@@ -1,3 +1,4 @@
+from typing import Optional
 import requests
 import re
 
@@ -14,6 +15,17 @@ class FreeMc():
         idz = idx
         print("with love from Ant, and dev<3")
     class console():
+        # UNTESTED | UNCOMMENT IF NEEDED
+        # def getPlayers(self) -> Optional[str]:
+        #     rgx = r"\[\d+:\d+:\d+ INFO\]: There are \d+ of a max of \d+ players online"
+        #     self.write('list')
+        #     logs = self.getlogs()
+
+        #     if isinstance(logs, Exception):
+        #         raise logs
+
+        #     return re.match(rgx, '\n'.join(logs))
+
         def write(self, text):
             try:
                 payload = {

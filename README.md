@@ -2,6 +2,10 @@
 Python module to control your freemcserver.net server
 
 
+Hello! if you are reading this, that means this is public.
+this started as some stupid thing i was making for a discord bot for my school server.
+this was not meant to be public but it was always a thought in my mind that i might release it.
+i hope this helps you with whatever ur trying todo with your minecraft server
 
 
 # starting
@@ -15,6 +19,11 @@ goto headers and get authentication (make sure u copy SCOPED too)
 get the metrics (probably the last header), this changes quite a bit so keep it updated!
 
 get the id from the topbar url,  panel.freemcserver.net/server/(this will be the id!)
+
+make sure you've already downloaded the package
+```
+pip install freemcserver.py
+```
 
 ```py
 import freemc

@@ -14,7 +14,7 @@ goto headers and get authentication (make sure u copy SCOPED too)
 
 get the metrics (probably the last header)
 
-get the id from the topbar url,  https://panel.freemcserver.net/server/(this will be the id!)
+get the id from the topbar url,  panel.freemcserver.net/server/(this will be the id!)
 
 ```py
 import freemc

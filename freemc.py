@@ -40,8 +40,13 @@ class FreeMc():
         auth_match = re.search(auth_rgx, req)
         metrics_match = re.search(metrics_rgx, req)
         
-        auth_group = auth_match.group(1)
-        metrics_group = metrics_match.group(1)
+        auth_group = metrics_group = None
+
+        if auth_match:
+            auth_group = auth_match.group(1)
+
+        if metrics_match:
+            metrics_group = metrics_match.group(1)
 
         if not auth_group or not metrics_group:
             print("auth/metrics not found, bye cro")
@@ -200,26 +205,36 @@ class FreeMc():
             loop = threading.Thread(target=check_cons)
             loop.start()
             
+        def on_console_message(func):
+            def wrapper(self, *args, **kwargs):
+                self.watch['on_msg'] = func
+                result = func(*args, **kwargs)
+                return result
+            return wrapper
 
-        def on_console_message(self, func):
-            self.watch['on_msg'] = func
+        def on_join(func):
+            def wrapper(self, *args, **kwargs):
+                self.watch['on_join'] = func
+                result = func(*args, **kwargs)
+                return result
+            return wrapper
 
-        def on_join(self, func):
-            self.watch['on_join'] = func
-
-        def on_leave(self, func):
-            self.watch['on_leave'] = func
+        def on_leave(func):
+            def wrapper(self, *args, **kwargs):
+                self.watch['on_leave'] = func
+                result = func(*args, **kwargs)
+                return result
+            return wrapper
 
         def console_sent(self, msg):
-            if 'on_msg' in self.watch:
+            if self.watch['on_msg']:
                 self.watch['on_msg'](msg)
 
-            if 'on_join' in self.watch and msg.find("joined the game") > -1: # returns a user instance of the player who joined
+            if self.watch['on_join'] and msg.find("joined the game") > -1: # returns a user instance of the player who joined
                 user = FreeMc.user(msg[msg.find('[93m')+4:msg.find("joined the game")-1])
                 self.watch['on_join'](user)
 
-            if 'on_leave' in self.watch and msg.find("left the game") > -1: # returns a user instance of the player who left
+            if self.watch['on_leave'] and msg.find("left the game") > -1: # returns a user instance of the player who left
                 user = FreeMc.user(msg[msg.find('[93m')+4:msg.find("left the game")-1])
                 self.watch['on_leave'](user)
-
 

@@ -201,7 +201,7 @@ class FreeMc():
             def check_cons():
                 while True:
                     time.sleep(1) # if its too high, you will miss messages!, if its too low no one can connect
-                    self.console_sent(FreeMc.console().getlatest())
+                    self.trigger_event(FreeMc.console().getlatest())
             loop = threading.Thread(target=check_cons)
             loop.start()
             
@@ -226,7 +226,7 @@ class FreeMc():
                 return result
             return wrapper
 
-        def console_sent(self, msg):
+        def trigger_event(self, msg):
             if self.watch['on_msg']:
                 self.watch['on_msg'](msg)
 

@@ -22,7 +22,7 @@ get the id from the topbar url,  panel.freemcserver.net/server/(this will be the
 
 make sure you've already downloaded the package
 ```
-pip install freemcserver.py
+pip install freemcserver.py # this isint working atm, as we have not published.
 ```
 
 ```py
@@ -31,6 +31,9 @@ import freemc
 FreeMc = freemc.FreeMc("auth", "server id", "metrics")
 
 server, console, chatm game = FreeMc.server(), FreeMc.console(), FreeMc.chat(), FreeMc.game()
+
+## only define events if you are GOING to use them.
+events = FreeMc.events()
 ```
 
 
@@ -146,20 +149,20 @@ this executes the minecraft command "time set (arg)" with arg being the given ar
 # events
 
 ```py
-FreeMc.events().on_leave()
+events.on_leave()
 ```
 and
 ```py
-FreeMc.events().on_join()
+events.on_join()
 ```
 return user class of the player who joined/left
 ```py
-FreeMc.events().on_console_message()
+events.on_console_message()
 ```
 returns a string of the last 20 console messages every second
 ```py
 def onleft(user):
     print(user)
 
-FreeMc.events().on_leave(onleft)
+events.on_leave(onleft)
 ```

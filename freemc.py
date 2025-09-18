@@ -1,4 +1,4 @@
-import requests, re
+import requests, re, threading, time
 
 class FreeMc():
 
@@ -8,6 +8,7 @@ class FreeMc():
         "ea481edd605e676d", 
         "db04d5e26046e3e2",
         "1bba7aaf42261ccc",
+        "9af4451c8edcda94",
     }
 
     def __init__(self, authz, idx, metrics):
@@ -39,7 +40,8 @@ class FreeMc():
             try:
                 response = requests.get(f"https://api.freemcserver.net/v4/server/{idz}/logs", headers=auth).json()
                 latest = response['log']['latest']
-                response = requests.get(f"https://api.freemcserver.net/v4/server/{idz}/logs?lines=200&since={latest-2}", headers=auth).json()
+                response = requests.get(f"https://api.freemcserver.net/v4/server/{idz}/logs?lines=20&since={latest-4}", headers=auth).json()
+                # we return the latest 20 messages as a string, to try and make sure we dont miss any
                 string = str(response['log']['lines'])
                 return string[string.find("[K[")+2:string.find("'}")]
             except Exception as e:
@@ -147,4 +149,40 @@ class FreeMc():
     class game():
         def time(self, set):
             response = FreeMc.console().write(f"time set {set}")
-            return response  
+            return response 
+
+    class events():
+        def __init__(self):
+            self.watch = {}
+            def check_cons():
+                while True:
+                    time.sleep(1) # if its too high, you will miss messages!, if its too low no one can connect
+                    self.console_sent(FreeMc.console().getlatest())
+            loop = threading.Thread(target=check_cons)
+            loop.start()
+            
+
+        def on_console_message(self, func):
+            self.watch['on_msg'] = func
+
+        def on_join(self, func):
+            self.watch['on_join'] = func
+
+        def on_leave(self, func):
+            self.watch['on_leave'] = func
+
+        def console_sent(self, msg):
+            if 'on_msg' in self.watch:
+                self.watch['on_msg'](msg)
+
+            if 'on_join' in self.watch and msg.find("joined the game") > -1: # returns a user instance of the player who joined
+                user = FreeMc.user(msg[msg.find('[93m')+4:msg.find("joined the game")])
+                print(user.user)
+                self.watch['on_join'](user)
+
+            if 'on_leave' in self.watch and msg.find("left the game") > -1: # returns a user instance of the player who left
+                user = FreeMc.user(msg[msg.find('[93m')+4:msg.find("left the game")])
+                print(user.user)
+                self.watch['on_leave'](user)
+
+

@@ -1,4 +1,9 @@
-import requests, re, threading, time, os
+import sys
+import requests
+import re
+import threading
+import time
+import os
 
 class FreeMc():
 
@@ -25,8 +30,26 @@ class FreeMc():
         }
         idz = idx
         req = requests.get(f"https://panel.freemcserver.net/server/{idz}/console", headers=header).text
-        auth = req[req.find('window.fmcs.api_key="')+len('window.fmcs.api_key="'):req.find('window.fmcs.api_key="')+364]
-        metrics = req[req.find('window.fmcs.metrics = "')+len('window.fmcs.metrics = "'):req.find('window.fmcs.metrics = "')+39]
+
+        auth_rgx = r"window\.fmcs\.api_key(?: )?=(?: )?\"([a-zA-Z0-9]+)\""
+        metrics_rgx = r"window\.fmcs\.metrics(?: )?=(?: )?\"([a-zA-Z0-9]+)\"" # magic!
+        # auth = req[req.find('window.fmcs.api_key="')+len('window.fmcs.api_key="'):req.find('window.fmcs.api_key="')+364]
+        # metrics = req[req.find('window.fmcs.metrics = "')+len('window.fmcs.metrics = "'):req.find('window.fmcs.metrics = "')+39]
+        # use these if regex fails ^^
+
+        auth_match = re.search(auth_rgx, req)
+        metrics_match = re.search(metrics_rgx, req)
+        
+        auth_group = auth_match.group(1)
+        metrics_group = metrics_match.group(1)
+
+        if not auth_group or not metrics_group:
+            print("auth/metrics not found, bye cro")
+            sys.exit(1)
+        
+        auth = str(auth_group)
+        metrics = str(metrics_group)
+
         auth = {
             "authorization" : auth,
             "x-fmcs-metrics-wfkpe9eata": metrics
@@ -154,13 +177,12 @@ class FreeMc():
             response = FreeMc.console().write(f"deop {self.user}")
             return response  
 
-
         def give(self, item, amount):
             response = FreeMc.console().write(f"give {self.user} {item} {amount}")
             return response  
 
         def tp(self, x, y, z):
-            response = FreeMc.console().write(f"teleport {self.user} {x} {y} {z}")
+            response = FreeMc.console().write(f"tp {self.user} {x} {y} {z}")
             return response  
 
     class game():

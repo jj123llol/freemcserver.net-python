@@ -10,13 +10,15 @@ i hope this helps you with whatever ur trying todo with your minecraft server
 
 # starting
 
+goto console page
+
 use the network logger (ctrl + shift + i)
 
-hit start, and filter for a request called "start"
+refresh page
 
-goto headers and get authentication (make sure u copy SCOPED too)
+click the first request
 
-get the metrics (probably the last header), this changes quite a bit so keep it updated!
+goto headers and get cookie
 
 get the id from the topbar url,  panel.freemcserver.net/server/(this will be the id!)
 
@@ -28,13 +30,14 @@ pip install freemcserver.py # this isint working atm, as we have not published.
 ```py
 import freemc
 
-FreeMc = freemc.FreeMc("auth", "server id", "metrics")
+FreeMc = freemc.FreeMc("server id")
 
 server, console, chatm game = FreeMc.server(), FreeMc.console(), FreeMc.chat(), FreeMc.game()
 
 ## only define events if you are GOING to use them.
 events = FreeMc.events()
 ```
+this will prompt you for your cookie, paste it into there and hit enter!
 
 
 

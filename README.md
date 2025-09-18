@@ -90,7 +90,7 @@ returns a JSON of the console
 ```py
 console.getlatest()
 ```
-returns a string of the latest console msg
+returns a string of the latest 20 console msgs
 # chat
 
 chat.say("message") makes the server say the given message.
@@ -142,3 +142,24 @@ gives the user the specificed amount of the specified item
 game.time("arg")
 ```
 this executes the minecraft command "time set (arg)" with arg being the given argument 
+
+# events
+
+```py
+FreeMc.events().on_leave()
+```
+and
+```py
+FreeMc.events().on_join()
+```
+return user class of the player who joined/left
+```py
+FreeMc.events().on_console_message()
+```
+returns a string of the last 20 console messages every second
+```py
+def onleft(user):
+    print(user)
+
+FreeMc.events().on_leave(onleft)
+```

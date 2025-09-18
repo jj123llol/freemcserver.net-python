@@ -1,23 +1,36 @@
-import requests, re, threading, time
+import requests, re, threading, time, os
 
 class FreeMc():
 
-    global auth, idz, known_metrics
+    global auth, idz
 
-    known_metrics = { # im like 70% sure they just swap between a few, so maybe we can collect them all and make a list so people dont have to manually change it
-        "ea481edd605e676d", 
-        "db04d5e26046e3e2",
-        "1bba7aaf42261ccc",
-        "9af4451c8edcda94",
-    }
 
-    def __init__(self, authz, idx, metrics):
+    def __init__(self, idx):
         global auth, idz
-        auth = {
-            "authorization" : authz,
-            "x-fmcs-metrics-wfkpe9eata": metrics
+        if not os.path.exists("cookie.txt"):
+            with open("cookie.txt", "w") as f:
+                f.write(input("Enter Cookie: "))
+
+        with open("cookie.txt", "r") as f:
+            cookie = f.read()
+
+        if '\n' in cookie:
+            cookie = cookie.replace('\n', ' ')
+            with open("cookie.txt", "w") as f:
+                f.write(cookie)
+
+        header = {
+            "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36 Edg/140.0.0.0",
+            "cookie": cookie
         }
         idz = idx
+        req = requests.get(f"https://panel.freemcserver.net/server/{idz}/console", headers=header).text
+        auth = req[req.find('window.fmcs.api_key="')+len('window.fmcs.api_key="'):req.find('window.fmcs.api_key="')+364]
+        metrics = req[req.find('window.fmcs.metrics = "')+len('window.fmcs.metrics = "'):req.find('window.fmcs.metrics = "')+39]
+        auth = {
+            "authorization" : auth,
+            "x-fmcs-metrics-wfkpe9eata": metrics
+        }
     class console():
         def write(self, text):
             try:
@@ -146,6 +159,10 @@ class FreeMc():
             response = FreeMc.console().write(f"give {self.user} {item} {amount}")
             return response  
 
+        def tp(self, x, y, z):
+            response = FreeMc.console().write(f"teleport {self.user} {x} {y} {z}")
+            return response  
+
     class game():
         def time(self, set):
             response = FreeMc.console().write(f"time set {set}")
@@ -176,13 +193,11 @@ class FreeMc():
                 self.watch['on_msg'](msg)
 
             if 'on_join' in self.watch and msg.find("joined the game") > -1: # returns a user instance of the player who joined
-                user = FreeMc.user(msg[msg.find('[93m')+4:msg.find("joined the game")])
-                print(user.user)
+                user = FreeMc.user(msg[msg.find('[93m')+4:msg.find("joined the game")-1])
                 self.watch['on_join'](user)
 
             if 'on_leave' in self.watch and msg.find("left the game") > -1: # returns a user instance of the player who left
-                user = FreeMc.user(msg[msg.find('[93m')+4:msg.find("left the game")])
-                print(user.user)
+                user = FreeMc.user(msg[msg.find('[93m')+4:msg.find("left the game")-1])
                 self.watch['on_leave'](user)
 
 

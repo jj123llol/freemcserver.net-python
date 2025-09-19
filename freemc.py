@@ -31,29 +31,29 @@ class FreeMc():
         idz = idx
         req = requests.get(f"https://panel.freemcserver.net/server/{idz}/console", headers=header).text
 
-        auth_rgx = r"window\.fmcs\.api_key(?: )?=(?: )?\"([a-zA-Z0-9]+)\""
-        metrics_rgx = r"window\.fmcs\.metrics(?: )?=(?: )?\"([a-zA-Z0-9]+)\"" # magic!
-        # auth = req[req.find('window.fmcs.api_key="')+len('window.fmcs.api_key="'):req.find('window.fmcs.api_key="')+364]
-        # metrics = req[req.find('window.fmcs.metrics = "')+len('window.fmcs.metrics = "'):req.find('window.fmcs.metrics = "')+39]
+        #auth_rgx = r"window\.fmcs\.api_key(?: )?=(?: )?\"([a-zA-Z0-9]+)\""
+        #metrics_rgx = r"window\.fmcs\.metrics(?: )?=(?: )?\"([a-zA-Z0-9]+)\"" # magic!
+        auth = req[req.find('window.fmcs.api_key="')+len('window.fmcs.api_key="'):req.find('window.fmcs.api_key="')+364]
+        metrics = req[req.find('window.fmcs.metrics = "')+len('window.fmcs.metrics = "'):req.find('window.fmcs.metrics = "')+39]
         # use these if regex fails ^^
 
-        auth_match = re.search(auth_rgx, req)
-        metrics_match = re.search(metrics_rgx, req)
+        #auth_match = re.search(auth_rgx, req)
+        #metrics_match = re.search(metrics_rgx, req)
         
-        auth_group = metrics_group = None
+        #auth_group = metrics_group = None
 
-        if auth_match:
-            auth_group = auth_match.group(1)
+        #if auth_match:
+            #auth_group = auth_match.group(1)
 
-        if metrics_match:
-            metrics_group = metrics_match.group(1)
+        #if metrics_match:
+            #metrics_group = metrics_match.group(1)
 
-        if not auth_group or not metrics_group:
-            print("auth/metrics not found, bye cro")
-            sys.exit(1)
+        #if not auth_group or not metrics_group:
+            #print("auth/metrics not found, bye cro")
+            #sys.exit(1)
         
-        auth = str(auth_group)
-        metrics = str(metrics_group)
+        #auth = str(auth_group)
+        #metrics = str(metrics_group)
 
         auth = {
             "authorization" : auth,
@@ -196,32 +196,37 @@ class FreeMc():
             return response 
 
     class events():
+        global watch
+        watch = {}
         def __init__(self):
-            self.watch = {}
             def check_cons():
                 while True:
-                    time.sleep(1) # if its too high, you will miss messages!, if its too low no one can connect
-                    self.trigger_event(FreeMc.console().getlatest())
+                    if len(watch) > 0: 
+                        time.sleep(1) # if its too high, you will miss messages!, if its too low no one can connect
+                        self.trigger_event(FreeMc.console().getlatest())
             loop = threading.Thread(target=check_cons)
             loop.start()
             
         def on_console_message(func):
             def wrapper(self, *args, **kwargs):
-                self.watch['on_msg'] = func
+                global watch
+                watch['on_msg'] = func
                 result = func(*args, **kwargs)
                 return result
             return wrapper
 
         def on_join(func):
             def wrapper(self, *args, **kwargs):
-                self.watch['on_join'] = func
+                global watch
+                watch['on_join'] = func
                 result = func(*args, **kwargs)
                 return result
             return wrapper
 
         def on_leave(func):
             def wrapper(self, *args, **kwargs):
-                self.watch['on_leave'] = func
+                global watch
+                watch['on_leave'] = func
                 result = func(*args, **kwargs)
                 return result
             return wrapper
@@ -237,4 +242,3 @@ class FreeMc():
             if self.watch['on_leave'] and msg.find("left the game") > -1: # returns a user instance of the player who left
                 user = FreeMc.user(msg[msg.find('[93m')+4:msg.find("left the game")-1])
                 self.watch['on_leave'](user)
-

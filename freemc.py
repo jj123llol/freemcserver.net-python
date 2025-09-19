@@ -1,4 +1,5 @@
 import sys
+import warnings
 import requests
 import re
 import threading
@@ -145,53 +146,53 @@ class FreeMc():
             raise ValueError("Expected user.name, not user.user 🥀")
 
         def kick(self):
-            response = FreeMc.console().write(f"kick {self.user}")
+            response = FreeMc.console().write(f"kick {self.name}")
             return response
 
         def ban(self):
-            response = FreeMc.console().write(f"ban {self.user}")
+            response = FreeMc.console().write(f"ban {self.name}")
             return response
 
         def ip_ban(self):
-            response = FreeMc.console().write(f"ban-ip {self.user}")
+            response = FreeMc.console().write(f"ban-ip {self.name}")
             return response
 
         def unban(self):
-            FreeMc.console().write(f"pardon {self.user}")
-            response = FreeMc.console().write(f"pardon-ip {self.user}")
+            FreeMc.console().write(f"pardon {self.name}")
+            response = FreeMc.console().write(f"pardon-ip {self.name}")
             return response
 
         def kill(self):
-            response = FreeMc.console().write(f"kill {self.user}")
+            response = FreeMc.console().write(f"kill {self.name}")
             return response
 
         def smite(self):
-            response = FreeMc.console().write(f"execute at {self.user} run summon lightning_bolt ~ ~ ~")
+            response = FreeMc.console().write(f"execute at {self.name} run summon lightning_bolt ~ ~ ~")
             self.kill()
             return response
 
         def whitelist(self):
-            response = FreeMc.console().write(f"whitelist add {self.user}")
+            response = FreeMc.console().write(f"whitelist add {self.name}")
             return response
 
         def unwhitelist(self):
-            response = FreeMc.console().write(f"whitelist remove {self.user}")
+            response = FreeMc.console().write(f"whitelist remove {self.name}")
             return response
 
         def op(self):
-            response = FreeMc.console().write(f"op {self.user}")
+            response = FreeMc.console().write(f"op {self.name}")
             return response  
 
         def deop(self):
-            response = FreeMc.console().write(f"deop {self.user}")
+            response = FreeMc.console().write(f"deop {self.name}")
             return response  
 
         def give(self, item, amount):
-            response = FreeMc.console().write(f"give {self.user} {item} {amount}")
+            response = FreeMc.console().write(f"give {self.name} {item} {amount}")
             return response  
 
         def tp(self, x, y, z):
-            response = FreeMc.console().write(f"tp {self.user} {x} {y} {z}")
+            response = FreeMc.console().write(f"tp {self.name} {x} {y} {z}")
             return response  
 
     class game():

@@ -1,5 +1,3 @@
-import sys
-import warnings
 import requests
 import re
 import threading
@@ -35,6 +33,8 @@ class FreeMc():
         metrics_found = req.find('window.fmcs.metrics = "')
         auth = req[auth_found+21:auth_found+364]
         metrics = req[metrics_found+23:metrics_found+39]
+        if auth.find("SCOPED") < 0:
+            raise ValueError("Failed to find auth, maybe the site changed their code and we have to rewrite the finding method\nor the cookie cannot access the server id entered.. did you use the right one?")
         auth = {
             "authorization" : auth,
             "x-fmcs-metrics-wfkpe9eata": metrics

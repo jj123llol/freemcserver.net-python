@@ -31,33 +31,10 @@ class FreeMc():
         }
         idz = idx
         req = requests.get(f"https://panel.freemcserver.net/server/{idz}/console", headers=header).text
-
-        #auth_rgx = r"window\.fmcs\.api_key(?: )?=(?: )?\"([a-zA-Z0-9]+)\""
-        #metrics_rgx = r"window\.fmcs\.metrics(?: )?=(?: )?\"([a-zA-Z0-9]+)\"" # magic!
         auth_found = req.find('window.fmcs.api_key="')
         metrics_found = req.find('window.fmcs.metrics = "')
         auth = req[auth_found+21:auth_found+364]
         metrics = req[metrics_found+23:metrics_found+39]
-        # use these if regex fails ^^
-
-        #auth_match = re.search(auth_rgx, req)
-        #metrics_match = re.search(metrics_rgx, req)
-        
-        #auth_group = metrics_group = None
-
-        #if auth_match:
-            #auth_group = auth_match.group(1)
-
-        #if metrics_match:
-            #metrics_group = metrics_match.group(1)
-
-        #if not auth_group or not metrics_group:
-            #print("auth/metrics not found, bye cro")
-            #sys.exit(1)
-        
-        #auth = str(auth_group)
-        #metrics = str(metrics_group)
-
         auth = {
             "authorization" : auth,
             "x-fmcs-metrics-wfkpe9eata": metrics

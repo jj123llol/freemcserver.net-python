@@ -168,5 +168,5 @@ returns a string of the last 20 console messages every second
 ```py
 @events.on_join
 def can_be_anything(user):
-    chat.say(f"Hello {user.user}!")
+    chat.say(f"Hello {user.name}!")
 ```

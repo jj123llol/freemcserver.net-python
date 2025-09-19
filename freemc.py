@@ -34,8 +34,10 @@ class FreeMc():
 
         #auth_rgx = r"window\.fmcs\.api_key(?: )?=(?: )?\"([a-zA-Z0-9]+)\""
         #metrics_rgx = r"window\.fmcs\.metrics(?: )?=(?: )?\"([a-zA-Z0-9]+)\"" # magic!
-        auth = req[req.find('window.fmcs.api_key="')+len('window.fmcs.api_key="'):req.find('window.fmcs.api_key="')+364]
-        metrics = req[req.find('window.fmcs.metrics = "')+len('window.fmcs.metrics = "'):req.find('window.fmcs.metrics = "')+39]
+        auth_found = req.find('window.fmcs.api_key="')
+        metrics_found = req.find('window.fmcs.metrics = "')
+        auth = req[auth_found+21:auth_found+364]
+        metrics = req[metrics_found+23:metrics_found+39]
         # use these if regex fails ^^
 
         #auth_match = re.search(auth_rgx, req)

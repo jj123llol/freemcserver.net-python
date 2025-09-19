@@ -1,4 +1,4 @@
-import requests, re, threading, time, os
+import requests, re, threading, time, os # noqa ~ 
 
 class FreeMc():
 
@@ -25,14 +25,32 @@ class FreeMc():
         }
         idz = idx
         req = requests.get(f"https://panel.freemcserver.net/server/{idz}/console", headers=header).text
+
         if req.find("Your server is currently expired because it was not renewed") > -1:
-            raise TypeError("Please renew your server before running, we are unable to access important data such as server ip!")
-        auth_found = req.find('window.fmcs.api_key="')
-        metrics_found = req.find('window.fmcs.metrics = "')
-        auth = req[auth_found+21:auth_found+365]
-        metrics = req[metrics_found+23:metrics_found+39]
-        if auth.find("SCOPED") < 0:
+            raise Exception("Please renew your server before running, we are unable to access important data such as server ip!")
+
+        find_method = "find"
+        # find = current method (str.find)
+        # regex = Donot use ok is experimental ok experimental - dev
+
+        if find_method == "find":
+            auth_found = req.find('window.fmcs.api_key="')
+            metrics_found = req.find('window.fmcs.metrics = "')
+
+            auth = req[auth_found+21:auth_found+365]
+            metrics = req[metrics_found+23:metrics_found+39]
+        elif find_method == "regex":
+            auth_rgx = r'window.fmcs.api_key="(SCOPED (?:[a-ZA-Z0-9]+))"'
+            auth_match = re.search(auth_rgx, req, re.MULTILINE)
+
+            metrics_rgx = r'window.fmcs.metrics = "([a-ZA-Z0-9]+)"'
+            metrics_match = re.search(metrics_rgx, req, re.MULTILINE)
+
+            auth, metrics = (auth_match and auth_match.group(1)), (metrics_match and metrics_match.group(1))
+
+        if (auth.find("SCOPED") < 0 and find_method == "find") or (not auth and find_method == "regex"):
             raise ValueError("Failed to find auth, maybe the site changed their code and we have to rewrite the finding method\nor the cookie cannot access the server id entered.. did you use the right one?")
+
         auth = {
             "authorization" : auth,
             "x-fmcs-metrics-wfkpe9eata": metrics,

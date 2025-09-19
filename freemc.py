@@ -90,6 +90,19 @@ class FreeMc():
                 return e
 
     class server():
+        def __init__(self):
+            rgx = r"<code>([a-zA-Z0-9-]+)\.enderman\.cloud<\/code>"
+            req = requests.get(f"https://panel.freemcserver.net/server/{idz}", headers=auth).text
+            match = re.search(rgx, req, re.MULTILINE)
+            if not match:
+                raise ValueError("Couldn't find server ip")
+            
+            ip = match.group(1)
+            if not ip:
+                raise ValueError("Couldn't find server ip")
+            
+            self.ip = f"{ip}.enderman.cloud"
+
         def getPlayers(self):
             response = requests.get(f"https://api.freemcserver.net/v4/server/{idz}/ping", headers=auth).json()
             online = response['data']["players"]['list']

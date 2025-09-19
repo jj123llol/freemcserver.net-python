@@ -138,6 +138,11 @@ user.give(item, amount)
 ```
 gives the user the specificed amount of the specified item
 
+```py
+user.name
+```
+returns a string of the players username
+
 
 
 # game

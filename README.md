@@ -16,7 +16,7 @@ use the network logger (ctrl + shift + i)
 
 refresh page
 
-click the first request
+click the first request (called console)
 
 goto headers and get cookie
 
@@ -32,10 +32,7 @@ import freemc
 
 FreeMc = freemc.FreeMc("server id")
 
-server, console, chatm game = FreeMc.server(), FreeMc.console(), FreeMc.chat(), FreeMc.game()
-
-## only define events if you are GOING to use them.
-events = FreeMc.events()
+server, console, chat, game, events = FreeMc.server(), FreeMc.console(), FreeMc.chat(), FreeMc.game(), FreeMc.events()
 ```
 this will prompt you for your cookie, paste it into there and hit enter!
 
@@ -152,20 +149,19 @@ this executes the minecraft command "time set (arg)" with arg being the given ar
 # events
 
 ```py
-events.on_leave()
+events.on_leave
 ```
 and
 ```py
-events.on_join()
+events.on_join
 ```
 return user class of the player who joined/left
 ```py
-events.on_console_message()
+events.on_console_message
 ```
 returns a string of the last 20 console messages every second
 ```py
-def onleft(user):
-    print(user)
-
-events.on_leave(onleft)
+@events.on_join
+def can_be_anything(user):
+    chat.say(f"Hello {user.user}!")
 ```

@@ -215,7 +215,7 @@ class FreeMc():
             loop = threading.Thread(target=check_cons)
             loop.start()
             
-        def on_console_message(func):
+        def on_console_message(self, func):
             def wrapper(self, *args, **kwargs):
                 global watch
                 watch['on_msg'] = func
@@ -223,7 +223,7 @@ class FreeMc():
                 return result
             return wrapper
 
-        def on_join(func):
+        def on_join(self, func):
             def wrapper(self, *args, **kwargs):
                 global watch
                 watch['on_join'] = func
@@ -231,7 +231,7 @@ class FreeMc():
                 return result
             return wrapper
 
-        def on_leave(func):
+        def on_leave(self, func):
             def wrapper(self, *args, **kwargs):
                 global watch
                 watch['on_leave'] = func

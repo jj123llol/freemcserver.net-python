@@ -1,4 +1,5 @@
 import sys
+import warnings
 import requests
 import re
 import threading
@@ -138,7 +139,11 @@ class FreeMc():
 
     class user():
         def __init__(self, user):
-            self.user = user
+            self.name = user
+        
+        @property
+        def user(self):
+            raise ValueError("Expected user.name, not user.user 🥀")
 
         def kick(self):
             response = FreeMc.console().write(f"kick {self.user}")

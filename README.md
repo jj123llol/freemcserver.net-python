@@ -27,6 +27,7 @@ make sure you've already downloaded the package
 pip install freemcserver.py # this isint working atm, as we have not published.
 ```
 
+this will prompt you for your cookie, paste it into there and hit enter!
 ```py
 import freemc
 
@@ -34,7 +35,6 @@ FreeMc = freemc.FreeMc("server id")
 
 server, console, chat, game, events = FreeMc.server(), FreeMc.console(), FreeMc.chat(), FreeMc.game(), FreeMc.events()
 ```
-this will prompt you for your cookie, paste it into there and hit enter!
 
 
 
@@ -42,45 +42,46 @@ this will prompt you for your cookie, paste it into there and hit enter!
 # server
 
 you can do
+
+to start the server:
 ```py
 server.start()
 ```
-to start the server,
 
+to stop the server:
 ```py
 server.stop()
 ```
-to stop the server,
 
+to return the usage JSON of the server:
 ```py
 server.usage()
 ```
-to return the usage JSON of the server,
 
+checking status, returns true or false. true for online, false for offline.
 ```py
 server.status()
 ```
-returns true or false. true for online, false for offline.
 
+to restart the server:
 ```py
 server.restart()
 ```
-to restart the server.
 
+returns a list of active users, in the FreeMc.user() format:
 ```py
 server.getPlayers()
 ```
-returns a list of active users, in the FreeMc.user() format.
 ```py
 users = server.getPlayers()
 for user in user:
   user.smite()
 ```
 
+get server ip as string:
 ```py
 server.ip
 ```
-returns the servers ip as a string
 
 # console
 
@@ -90,15 +91,15 @@ example:
 console.write("kill Plasma_Admin")
 ```
 
+get console logs, returns a JSON of the console
 ```py
 console.getlogs()
 ```
-returns a JSON of the console
 
+returns a string of the latest 20 console msgs:
 ```py
 console.getlatest()
 ```
-returns a string of the latest 20 console msgs
 # chat
 
 chat.say("message") makes the server say the given message.
@@ -133,20 +134,20 @@ user.op()
 user.deop()
 ```
 
+summons lightning on the target and kills them:
 ```py
 user.smite()
 ```
-summons lightning on the target and kills them.
 
+gives the user the specificed amount of the specified item:
 ```py
 user.give(item, amount)
 ```
-gives the user the specificed amount of the specified item
 
+returns a string of the players username:
 ```py
 user.name
 ```
-returns a string of the players username
 
 
 
@@ -158,6 +159,8 @@ this executes the minecraft command "time set (arg)" with arg being the given ar
 
 # events
 
+
+return user class of the player who joined/left:
 ```py
 events.on_leave
 ```
@@ -165,11 +168,11 @@ and
 ```py
 events.on_join
 ```
-return user class of the player who joined/left
+
+returns a string of the last 20 console messages every second:
 ```py
 events.on_console_message
 ```
-returns a string of the last 20 console messages every second
 ```py
 @events.on_join
 def can_be_anything(user):

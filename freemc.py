@@ -29,6 +29,8 @@ class FreeMc():
         }
         idz = idx
         req = requests.get(f"https://panel.freemcserver.net/server/{idz}/console", headers=header).text
+        if req.find("Your server is currently expired because it was not renewed") > -1:
+            raise TypeError("Please renew your server before running, we are unable to access important data such as server ip!")
         auth_found = req.find('window.fmcs.api_key="')
         metrics_found = req.find('window.fmcs.metrics = "')
         auth = req[auth_found+21:auth_found+364]
@@ -37,7 +39,9 @@ class FreeMc():
             raise ValueError("Failed to find auth, maybe the site changed their code and we have to rewrite the finding method\nor the cookie cannot access the server id entered.. did you use the right one?")
         auth = {
             "authorization" : auth,
-            "x-fmcs-metrics-wfkpe9eata": metrics
+            "x-fmcs-metrics-wfkpe9eata": metrics,
+            "cookie": cookie,
+            "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36 Edg/140.0.0.0",
         }
     class console():
         def write(self, text):
@@ -124,10 +128,13 @@ class FreeMc():
 
     class chat():
         def say(self, msg):
-            if len(msg) > 256:
-                raise ValueError("Message is too long!")
-            response = FreeMc.console().write(f"say {msg}")
-            return response
+            try:
+                if len(msg) > 256:
+                    raise ValueError("Message is too long!")
+                response = FreeMc.console().write(f"say {msg}")
+                return response
+            except Exception as e:
+                return e
 
     class user():
         def __init__(self, user):
@@ -135,7 +142,11 @@ class FreeMc():
         
         @property
         def user(self):
-            raise ValueError("Expected user.name, not user.user 🥀")
+            try:
+                print("Deprecated!")
+                raise ValueError("Expected user.name, not user.user 🥀")
+            except Exception as e:
+                print(e)
 
         def kick(self):
             response = FreeMc.console().write(f"kick {self.name}")

@@ -77,6 +77,11 @@ for user in user:
   user.smite()
 ```
 
+```py
+server.ip
+```
+returns the servers ip as a string
+
 # console
 
 console.write("command"), executes a slash command in the console.

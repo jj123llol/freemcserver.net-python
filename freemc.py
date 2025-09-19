@@ -1,9 +1,11 @@
-import requests, re, threading, time, os # noqa ~ 
+import requests, re, threading, time, os # noqa: E401
+# ant likes putting imports in 1 line but vs code wont stop screaming at me :wilted_rose:
+
+def warn(msg):
+    print(f"[WARNING] {msg}")
 
 class FreeMc():
-
     global auth, idz, header
-
 
     def __init__(self, idx):
         global auth, idz, header
@@ -39,6 +41,7 @@ class FreeMc():
 
             auth = req[auth_found+21:auth_found+365]
             metrics = req[metrics_found+23:metrics_found+39]
+
         elif find_method == "regex":
             auth_rgx = r'window.fmcs.api_key="(SCOPED (?:[a-ZA-Z0-9]+))"'
             auth_match = re.search(auth_rgx, req, re.MULTILINE)
@@ -55,6 +58,7 @@ class FreeMc():
             "authorization" : auth,
             "x-fmcs-metrics-wfkpe9eata": metrics,
         }
+
     class console():
         def write(self, text):
             try:
@@ -87,16 +91,17 @@ class FreeMc():
     class server():
         def __init__(self):
             global header
-            rgx = r"<code>([a-zA-Z0-9-]+)\.enderman\.cloud<\/code>"
+            rgx = r"<code>([a-zA-Z0-9-]+)\.enderman\.cloud</code>"
             req = requests.get(f"https://panel.freemcserver.net/server/{idz}", headers=header).text
             match = re.search(rgx, req, re.MULTILINE)
+
             if not match:
-                raise ValueError("Couldn't find server ip")
-            
+                raise ValueError("Couldn't find server IP")
+
             ip = match.group(1)
             if not ip:
-                raise ValueError("Couldn't find server ip")
-            
+                raise ValueError("Couldn't find server IP")
+
             self.ip = f"{ip}.enderman.cloud"
 
         def getPlayers(self):
@@ -155,11 +160,8 @@ class FreeMc():
         
         @property
         def user(self):
-            try:
-                print("Deprecated!")
-                raise ValueError("Expected user.name, not user.user 🥀")
-            except Exception as e:
-                print(e)
+            warn("user.user is deprecated!")
+            return self.name
 
         def kick(self):
             response = FreeMc.console().write(f"kick {self.name}")

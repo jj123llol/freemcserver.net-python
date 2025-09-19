@@ -1,9 +1,6 @@
 import requests, re, threading, time, os # noqa: E401
 # ant likes putting imports in 1 line but vs code wont stop screaming at me :wilted_rose:
 
-def warn(msg):
-    print(f"[WARNING] {msg}")
-
 class FreeMc():
     global auth, idz, header
 
@@ -160,7 +157,7 @@ class FreeMc():
         
         @property
         def user(self):
-            warn("user.user is deprecated!")
+            print("[WARNING] user.user is deprecated!")
             return self.name
 
         def kick(self):

@@ -1,8 +1,4 @@
-import requests
-import re
-import threading
-import time
-import os
+import requests, re, threading, time, os
 
 class FreeMc():
 
@@ -249,3 +245,4 @@ class FreeMc():
             if self.watch['on_leave'] and msg.find("left the game") > -1: # returns a user instance of the player who left
                 user = FreeMc.user(msg[msg.find('[93m')+4:msg.find("left the game")-1])
                 self.watch['on_leave'](user)
+

@@ -1,4 +1,8 @@
-import requests, re, threading, time, os
+import requests
+import re
+import threading
+import time
+import os
 
 class FreeMc():
 
@@ -219,30 +223,32 @@ class FreeMc():
             return wrapper
 
         def on_join(self, func):
+            global watch
+            watch['on_join'] = func
             def wrapper(self, *args, **kwargs):
-                global watch
-                watch['on_join'] = func
                 result = func(*args, **kwargs)
                 return result
             return wrapper
 
         def on_leave(self, func):
+            global watch
+            watch['on_leave'] = func
             def wrapper(self, *args, **kwargs):
-                global watch
-                watch['on_leave'] = func
                 result = func(*args, **kwargs)
                 return result
             return wrapper
 
         def trigger_event(self, msg):
-            if self.watch['on_msg']:
-                self.watch['on_msg'](msg)
+            global watch
+            if not isinstance(msg, str):
+                return
+            if 'on_msg' in watch:
+                watch['on_msg'](msg)
 
-            if self.watch['on_join'] and msg.find("joined the game") > -1: # returns a user instance of the player who joined
+            if 'on_join' in watch and msg.find("joined the game") > -1: # returns a user instance of the player who joined
                 user = FreeMc.user(msg[msg.find('[93m')+4:msg.find("joined the game")-1])
-                self.watch['on_join'](user)
+                watch['on_join'](user)
 
-            if self.watch['on_leave'] and msg.find("left the game") > -1: # returns a user instance of the player who left
+            if 'on_leave' in watch and msg.find("left the game") > -1: # returns a user instance of the player who left
                 user = FreeMc.user(msg[msg.find('[93m')+4:msg.find("left the game")-1])
-                self.watch['on_leave'](user)
-
+                watch['on_leave'](user)

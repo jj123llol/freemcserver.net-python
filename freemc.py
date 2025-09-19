@@ -6,11 +6,11 @@ import os
 
 class FreeMc():
 
-    global auth, idz
+    global auth, idz, header
 
 
     def __init__(self, idx):
-        global auth, idz
+        global auth, idz, header
         if not os.path.exists("cookie.txt"):
             with open("cookie.txt", "w") as f:
                 f.write(input("Enter Cookie: "))
@@ -33,15 +33,13 @@ class FreeMc():
             raise TypeError("Please renew your server before running, we are unable to access important data such as server ip!")
         auth_found = req.find('window.fmcs.api_key="')
         metrics_found = req.find('window.fmcs.metrics = "')
-        auth = req[auth_found+21:auth_found+364]
+        auth = req[auth_found+21:auth_found+365]
         metrics = req[metrics_found+23:metrics_found+39]
         if auth.find("SCOPED") < 0:
             raise ValueError("Failed to find auth, maybe the site changed their code and we have to rewrite the finding method\nor the cookie cannot access the server id entered.. did you use the right one?")
         auth = {
             "authorization" : auth,
             "x-fmcs-metrics-wfkpe9eata": metrics,
-            "cookie": cookie,
-            "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36 Edg/140.0.0.0",
         }
     class console():
         def write(self, text):
@@ -74,8 +72,9 @@ class FreeMc():
 
     class server():
         def __init__(self):
+            global header
             rgx = r"<code>([a-zA-Z0-9-]+)\.enderman\.cloud<\/code>"
-            req = requests.get(f"https://panel.freemcserver.net/server/{idz}", headers=auth).text
+            req = requests.get(f"https://panel.freemcserver.net/server/{idz}", headers=header).text
             match = re.search(rgx, req, re.MULTILINE)
             if not match:
                 raise ValueError("Couldn't find server ip")

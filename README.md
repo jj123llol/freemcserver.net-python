@@ -100,6 +100,11 @@ returns a string of the latest 20 console msgs:
 ```py
 console.getlatest()
 ```
+
+returns a string of the last console message, this can be used for getting the servers response to a command:
+```py
+console.getSingleLatest()
+```
 # chat
 
 chat.say("message") makes the server say the given message.
@@ -147,6 +152,16 @@ user.give(item, amount)
 returns a string of the players username:
 ```py
 user.name
+```
+
+trap a user in a bedrock cage at height limit.
+```py
+user.jail()
+```
+
+release a user from their bedrock cage, tping them back to their og spot before being jailed.
+```py
+user.unjail()
 ```
 
 

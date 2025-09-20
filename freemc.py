@@ -30,7 +30,7 @@ class FreeMc():
 
         find_method = "find"
         # find = current method (str.find)
-        # regex = Donot use is experimental - dev
+        # regex = experimental - dev
 
         if find_method == "find":
             auth_found = req.find('window.fmcs.api_key="')

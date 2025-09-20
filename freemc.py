@@ -30,7 +30,7 @@ class FreeMc():
 
         find_method = "find"
         # find = current method (str.find)
-        # regex = Donot use ok is experimental ok experimental - dev
+        # regex = Donot use is experimental - dev
 
         if find_method == "find":
             auth_found = req.find('window.fmcs.api_key="')
@@ -40,15 +40,15 @@ class FreeMc():
             metrics = req[metrics_found+23:metrics_found+39]
 
         elif find_method == "regex":
-            auth_rgx = r'window.fmcs.api_key="(SCOPED (?:[a-ZA-Z0-9]+))"'
+            auth_rgx = r'window.fmcs.api_key="(SCOPED (?:[a-zA-Z0-9._-]+))"'
             auth_match = re.search(auth_rgx, req, re.MULTILINE)
 
-            metrics_rgx = r'window.fmcs.metrics = "([a-ZA-Z0-9]+)"'
+            metrics_rgx = r'window.fmcs.metrics = "([a-zA-Z0-9]+)"'
             metrics_match = re.search(metrics_rgx, req, re.MULTILINE)
 
             auth, metrics = (auth_match and auth_match.group(1)), (metrics_match and metrics_match.group(1))
 
-        if (auth.find("SCOPED") < 0 and find_method == "find") or (not auth and find_method == "regex"):
+        if not auth or auth.find("SCOPED") < 0:
             raise ValueError("Failed to find auth, maybe the site changed their code and we have to rewrite the finding method\nor the cookie cannot access the server id entered.. did you use the right one?")
 
         auth = {
@@ -92,10 +92,8 @@ class FreeMc():
             req = requests.get(f"https://panel.freemcserver.net/server/{idz}", headers=header).text
             match = re.search(rgx, req, re.MULTILINE)
 
-            if not match:
-                raise ValueError("Couldn't find server IP")
+            ip = match and match.group(1)
 
-            ip = match.group(1)
             if not ip:
                 raise ValueError("Couldn't find server IP")
 

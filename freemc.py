@@ -157,7 +157,7 @@ class FreeMc():
         
         @property
         def user(self):
-            print("[WARNING] user.user is deprecated!")
+            print("[WARNING] user.user is deprecated! Use user.name")
             return self.name
 
         def kick(self):

@@ -152,6 +152,7 @@ class FreeMc():
     class user():
         def __init__(self, user):
             self.name = user
+            self.jail_info = {}
         
         @property
         def user(self):
@@ -204,9 +205,32 @@ class FreeMc():
             response = FreeMc.console().write(f"give {self.name} {item} {amount}")
             return response  
 
-        def tp(self, x, y, z):
+        def tp(self, coords: tuple[str, str, str]):
+            x, y, z = coords
             response = FreeMc.console().write(f"tp {self.name} {x} {y} {z}")
-            return response  
+            return response
+        
+        def jail(self):
+            self.tp(('~', '~', '~'))
+            coords_str = FreeMc.console().getSingleLatest()
+            
+            rgx = re.compile(f"Teleported {self.name} to ([0-9.]+), ([0-9.]+), ([0-9.]+)")
+            match = re.search(rgx, coords_str, re.MULTILINE)
+            if not match:
+                raise Exception("Couldn't find player coords")
+            
+            x, y, z = match.groups()
+            if not self.jail_info.get('jailed'):
+                self.jail_info['jailed'] = True
+                self.jail_info['coords'] = (x, y, z)
+                # TODO: design jail in singleplayer and make /fill cmds
+
+        def unjail(self):
+            if not self.jail_info.get('jailed'):
+                return # not jailed
+            
+            coords = self.jail_info['coords']
+            self.tp(coords)
 
     class game():
         def time(self, set):

@@ -1,5 +1,8 @@
+
 import requests, re, threading, time, os # noqa: E401
 # ant likes putting imports in 1 line but vs code wont stop screaming at me :wilted_rose:
+
+# :middle_finger: IT LOOKS NICER
 
 class FreeMc():
     global auth, idz, header
@@ -84,6 +87,13 @@ class FreeMc():
                 return string[string.find("[K[")+2:string.find("'}")]
             except Exception as e:
                 return e
+
+        def writeList(lis):
+            for cmd in lis:
+                try:
+                    self.write(cmd)
+                except Exception as e:
+                    return e
 
     class server():
         def __init__(self):
@@ -223,7 +233,15 @@ class FreeMc():
             if not self.jail_info.get('jailed'):
                 self.jail_info['jailed'] = True
                 self.jail_info['coords'] = (x, y, z)
-                # TODO: design jail in singleplayer and make /fill cmds
+                FreeMc.console().writeList([
+                    f"execute as {user.name} execute at ~ 213 ~ fill ~-4 ~7 ~-4 ~4 ~-2 ~-2 minecraft:bedrock",
+                    f"execute as {user.name} execute at ~ 213 ~ fill ~-4 ~7 ~-4 ~-2 ~-2 ~4 minecraft:bedrock",
+                    f"execute as {user.name} execute at ~ 213 ~ fill ~4 ~7 ~-4 ~2 ~-2 ~4 minecraft:bedrock",
+                    f"execute as {user.name} execute at ~ 213 ~ fill ~4 ~7 ~4 ~-4 ~5 ~-4 minecraft:bedrock",
+                    f"execute as {user.name} execute at ~ 213 ~ fill ~-4 ~-2 ~4 ~4 ~ ~-4 minecraft:bedrock",
+                    f"execute as {user.name} execute at ~ 213 ~ fill ~4 ~-2 ~4 ~-4 ~7 ~2 minecraft:bedrock",
+                    f"tp {user.name} ~ 213 ~"
+                ])
 
         def unjail(self):
             if not self.jail_info.get('jailed'):
@@ -231,6 +249,9 @@ class FreeMc():
             
             coords = self.jail_info['coords']
             self.tp(coords)
+            self.jail_info['jailed'] = False
+            self.jail_info['coords'] = None
+            FreeMc.console().write(f"execute as {user.name} execute at ~ 213 ~ fill ~4 ~-2 ~-4 ~-4 ~7 ~4 air")
 
     class game():
         def time(self, set):

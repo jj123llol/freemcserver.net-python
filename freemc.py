@@ -88,6 +88,16 @@ class FreeMc():
             except Exception as e:
                 return e
 
+        def getSingleLatest(self):
+            try:
+                response = requests.get(f"https://api.freemcserver.net/v4/server/{idz}/logs", headers=auth).json()
+                latest = response['log']['latest']
+                response = requests.get(f"https://api.freemcserver.net/v4/server/{idz}/logs?lines=1&since={latest-1.5}", headers=auth).json()
+                string = str(response['log']['lines'])
+                return string[string.find("[K[")+2:string.find("'}")]
+            except Exception as e:
+                return e
+
         def writeList(lis):
             for cmd in lis:
                 try:
@@ -234,12 +244,12 @@ class FreeMc():
                 self.jail_info['jailed'] = True
                 self.jail_info['coords'] = (x, y, z)
                 FreeMc.console().writeList([
-                    f"execute as {user.name} execute at ~ 213 ~ fill ~-4 ~7 ~-4 ~4 ~-2 ~-2 minecraft:bedrock",
-                    f"execute as {user.name} execute at ~ 213 ~ fill ~-4 ~7 ~-4 ~-2 ~-2 ~4 minecraft:bedrock",
-                    f"execute as {user.name} execute at ~ 213 ~ fill ~4 ~7 ~-4 ~2 ~-2 ~4 minecraft:bedrock",
-                    f"execute as {user.name} execute at ~ 213 ~ fill ~4 ~7 ~4 ~-4 ~5 ~-4 minecraft:bedrock",
-                    f"execute as {user.name} execute at ~ 213 ~ fill ~-4 ~-2 ~4 ~4 ~ ~-4 minecraft:bedrock",
-                    f"execute as {user.name} execute at ~ 213 ~ fill ~4 ~-2 ~4 ~-4 ~7 ~2 minecraft:bedrock",
+                    f"execute as {user.name} execute at ~ 213 ~ run fill ~-4 ~7 ~-4 ~4 ~-2 ~-2 minecraft:bedrock",
+                    f"execute as {user.name} execute at ~ 213 ~ run fill ~-4 ~7 ~-4 ~-2 ~-2 ~4 minecraft:bedrock",
+                    f"execute as {user.name} execute at ~ 213 ~ run fill ~4 ~7 ~-4 ~2 ~-2 ~4 minecraft:bedrock",
+                    f"execute as {user.name} execute at ~ 213 ~ run fill ~4 ~7 ~4 ~-4 ~5 ~-4 minecraft:bedrock",
+                    f"execute as {user.name} execute at ~ 213 ~ run fill ~-4 ~-2 ~4 ~4 ~ ~-4 minecraft:bedrock",
+                    f"execute as {user.name} execute at ~ 213 ~ run fill ~4 ~-2 ~4 ~-4 ~7 ~2 minecraft:bedrock",
                     f"tp {user.name} ~ 213 ~"
                 ])
 
@@ -251,7 +261,7 @@ class FreeMc():
             self.tp(coords)
             self.jail_info['jailed'] = False
             self.jail_info['coords'] = None
-            FreeMc.console().write(f"execute as {user.name} execute at ~ 213 ~ fill ~4 ~-2 ~-4 ~-4 ~7 ~4 air")
+            FreeMc.console().write(f"execute as {user.name} execute at ~ 213 ~ run fill ~4 ~-2 ~-4 ~-4 ~7 ~4 air")
 
     class game():
         def time(self, set):
@@ -308,4 +318,5 @@ class FreeMc():
             if 'on_leave' in watch and msg.find("left the game") > -1: # returns a user instance of the player who left
                 user = FreeMc.user(msg[msg.find('[93m')+4:msg.find("left the game")-1])
                 watch['on_leave'](user)
+
 

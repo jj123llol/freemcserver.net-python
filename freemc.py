@@ -234,7 +234,7 @@ class FreeMc():
         def jail(self):
             self.tp(('~', '~', '~'))
             coords_str = FreeMc.console().getSingleLatest()
-            rgx = re.compile(f"Teleported {self.name} to ([0-9.]+), ([0-9.]+), ([0-9.]+)")
+            rgx = re.compile(f"Teleported {self.name} to (\d+)\.(?:\d+), (\d+)\.(?:\d+), (\d+)\.(?:\d+)")
             match = re.search(rgx, coords_str)
             if not match:
                 raise Exception("Couldn't find player coords")

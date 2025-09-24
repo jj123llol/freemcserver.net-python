@@ -58,6 +58,7 @@ class FreeMc():
             "authorization" : auth,
             "x-fmcs-metrics-wfkpe9eata": metrics,
         }
+        print("Connected!")
 
     class console():
         def write(self, text):
@@ -92,13 +93,13 @@ class FreeMc():
             try:
                 response = requests.get(f"https://api.freemcserver.net/v4/server/{idz}/logs", headers=auth).json()
                 latest = response['log']['latest']
-                response = requests.get(f"https://api.freemcserver.net/v4/server/{idz}/logs?lines=1&since={latest-1.5}", headers=auth).json()
+                response = requests.get(f"https://api.freemcserver.net/v4/server/{idz}/logs?lines=20&since={latest-3}", headers=auth).json()
                 string = str(response['log']['lines'])
                 return string[string.find("[K[")+2:string.find("'}")]
             except Exception as e:
                 return e
 
-        def writeList(lis):
+        def writeList(self, lis):
             for cmd in lis:
                 try:
                     self.write(cmd)
@@ -233,25 +234,25 @@ class FreeMc():
         def jail(self):
             self.tp(('~', '~', '~'))
             coords_str = FreeMc.console().getSingleLatest()
-            
             rgx = re.compile(f"Teleported {self.name} to ([0-9.]+), ([0-9.]+), ([0-9.]+)")
-            match = re.search(rgx, coords_str, re.MULTILINE)
+            match = re.search(rgx, coords_str)
             if not match:
                 raise Exception("Couldn't find player coords")
             
             x, y, z = match.groups()
+            print(x, y, z)
             if not self.jail_info.get('jailed'):
                 self.jail_info['jailed'] = True
                 self.jail_info['coords'] = (x, y, z)
                 FreeMc.console().writeList([
-                    f"execute as {user.name} execute at ~ 213 ~ run fill ~-4 ~7 ~-4 ~4 ~-2 ~-2 minecraft:bedrock",
-                    f"execute as {user.name} execute at ~ 213 ~ run fill ~-4 ~7 ~-4 ~-2 ~-2 ~4 minecraft:bedrock",
-                    f"execute as {user.name} execute at ~ 213 ~ run fill ~4 ~7 ~-4 ~2 ~-2 ~4 minecraft:bedrock",
-                    f"execute as {user.name} execute at ~ 213 ~ run fill ~4 ~7 ~4 ~-4 ~5 ~-4 minecraft:bedrock",
-                    f"execute as {user.name} execute at ~ 213 ~ run fill ~-4 ~-2 ~4 ~4 ~ ~-4 minecraft:bedrock",
-                    f"execute as {user.name} execute at ~ 213 ~ run fill ~4 ~-2 ~4 ~-4 ~7 ~2 minecraft:bedrock",
-                    f"tp {user.name} ~ 213 ~"
-                ])
+                f"execute at {self.name} positioned ~ 213 ~ run fill ~-4 ~7 ~-4 ~4 ~-2 ~-2 minecraft:bedrock",
+                f"execute at {self.name} positioned ~ 213 ~ run fill ~-4 ~7 ~-4 ~-2 ~-2 ~4 minecraft:bedrock",
+                f"execute at {self.name} positioned ~ 213 ~ run fill ~4 ~7 ~-4 ~2 ~-2 ~4 minecraft:bedrock",
+                f"execute at {self.name} positioned ~ 213 ~ run fill ~4 ~7 ~4 ~-4 ~5 ~-4 minecraft:bedrock",
+                f"execute at {self.name} positioned ~ 213 ~ run fill ~-4 ~-2 ~4 ~4 ~ ~-4 minecraft:bedrock",
+                f"execute at {self.name} positioned ~ 213 ~ run fill ~4 ~-2 ~4 ~-4 ~7 ~2 minecraft:bedrock",
+                f"tp {self.name} ~ 213 ~"
+            ])
 
         def unjail(self):
             if not self.jail_info.get('jailed'):
@@ -261,7 +262,7 @@ class FreeMc():
             self.tp(coords)
             self.jail_info['jailed'] = False
             self.jail_info['coords'] = None
-            FreeMc.console().write(f"execute as {user.name} execute at ~ 213 ~ run fill ~4 ~-2 ~-4 ~-4 ~7 ~4 air")
+            FreeMc.console().write(f"execute at {self.name} positioned ~ 213 ~ run fill ~4 ~-2 ~-4 ~-4 ~7 ~4 air")
 
     class game():
         def time(self, set):
@@ -312,11 +313,19 @@ class FreeMc():
                 watch['on_msg'](msg)
 
             if 'on_join' in watch and msg.find("joined the game") > -1: # returns a user instance of the player who joined
-                user = FreeMc.user(msg[msg.find('[93m')+4:msg.find("joined the game")-1])
+                reg = r"([a-zA-Z0-9._]+) joined the game"
+                match = re.search(reg, msg, re.MULTILINE)
+
+                name = (match and match.group(1))
+                user = FreeMc.user(name)
+    
                 watch['on_join'](user)
 
             if 'on_leave' in watch and msg.find("left the game") > -1: # returns a user instance of the player who left
-                user = FreeMc.user(msg[msg.find('[93m')+4:msg.find("left the game")-1])
-                watch['on_leave'](user)
+                reg = r"([a-zA-Z0-9._]+) left the game"
+                match = re.search(reg, msg, re.MULTILINE)
 
+                name = (match and match.group(1))
+                user = FreeMc.user(name)
+                watch['on_leave'](user)
 
